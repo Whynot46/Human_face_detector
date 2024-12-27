@@ -11,14 +11,11 @@
         <h1 class="text-center">DosLab Human Detector</h1>
         <div class="text-center">
             <img src="{{ url_for('capture_stream') }}" id="video-stream" class="img-fluid" alt="Video Stream">
+            <img id="last-frame" class="img-fluid" alt="Last Frame" style="display: none;">
         </div>
         <div class="text-center mt-3">
             <button id="start-button" class="btn btn-success" onclick="startStream()" disabled>Запустить поток</button>
             <button id="stop-button" class="btn btn-danger" onclick="stopStream()">Остановить поток</button>
-        </div>
-        <div class="text-center mt-3">
-            <h2>Последний кадр:</h2>
-            <img id="last-frame" class="img-fluid" alt="Last Frame" style="display: none;">
         </div>
     </div>
 
@@ -32,6 +29,8 @@
                         streamActive = true;
                         document.getElementById("start-button").disabled = true;
                         document.getElementById("stop-button").disabled = false;
+                        document.getElementById("video-stream").style.display = "block"; // Показать поток
+                        document.getElementById("last-frame").style.display = "none"; // Скрыть последний кадр
                         document.getElementById("video-stream").src = "{{ url_for('capture_stream') }}";
                     }
                 });
@@ -39,13 +38,13 @@
         }
 
         function stopStream() {
-            if ( streamActive) {
+            if (streamActive) {
                 fetch('/stop_stream').then(response => {
                     if (response.ok) {
                         streamActive = false;
                         document.getElementById("start-button").disabled = false;
                         document.getElementById("stop-button").disabled = true;
-                        document.getElementById("video-stream").src = ""; // Остановить поток
+                        document.getElementById("video-stream").style.display = "none"; // Скрыть поток
                         displayLastFrame(); // Отобразить последний кадр
                     }
                 });
